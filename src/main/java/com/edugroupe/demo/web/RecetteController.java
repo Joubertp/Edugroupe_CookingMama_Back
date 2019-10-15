@@ -12,12 +12,13 @@ import com.edugroupe.demo.metiers.Recette;
 import com.edugroupe.demo.repositories.RecetteRepository;
 
 @Controller
+@RequestMapping("recette")
 public class RecetteController {
 
 	@Autowired
 	private RecetteRepository recetteRep;
 	
-	@RequestMapping("/gretting")
+	@RequestMapping("/greeting")
 	public @ResponseBody String gretting() {
 		return "Hello World!";
 	}
