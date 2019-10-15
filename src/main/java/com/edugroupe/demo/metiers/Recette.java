@@ -28,6 +28,7 @@ public class Recette extends BaseEntity{
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private String nom;
 	private LocalDate dateCreation;
 	private int tempPreparation;
 	private int tempCuisson;
