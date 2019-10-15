@@ -1,23 +1,21 @@
 package com.edugroupe.demo.metiers;
 
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import com.edugroupe.demo.metiers.json.BaseEntity;
-import com.edugroupe.demo.metiers.json.Etape;
-import com.edugroupe.demo.metiers.json.Ingredient;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import com.edugroupe.demo.metiers.json.EtapeRecette;
+import com.edugroupe.demo.metiers.json.IngredientRecette;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,17 +29,19 @@ public class Recette extends BaseEntity{
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private LocalDate dateCreation;
-	private int tempsPreparation;
-	private int tempsCuisson;
+	private int tempPreparation;
+	private int tempCuisson;
 	
 	@Type( type = "json" )
 	@Column( columnDefinition = "json" )
-	private Set<Ingredient> ingredients;
+	private Set<IngredientRecette> listeIngredients;
 	@Type( type = "json" )
 	@Column( columnDefinition = "json" )
-	private Set<Etape> etapes;
+	private Set<EtapeRecette> listeEtapes;
 	
-//	private Set<Commentaire> commentaires;
+	@JsonManagedReference
+	@OneToMany(mappedBy = "recette")
+	private Set<CommentaireRecette> commentaires;
 //	private User auteur;
 	
 }
