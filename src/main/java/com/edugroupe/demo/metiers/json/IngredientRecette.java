@@ -1,12 +1,14 @@
 package com.edugroupe.demo.metiers.json;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class IngredientRecette {
+public class IngredientRecette implements Serializable{
 
 	private int id;
-	private int quantite;
+	private String valeur;
 	
 }
