@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Type;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.Type;
 import com.edugroupe.demo.metiers.json.BaseEntity;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
 import com.edugroupe.demo.metiers.json.IngredientRecette;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
@@ -30,6 +32,7 @@ public class Recette extends BaseEntity{
 	private int id;
 	private String nom;
 	private LocalDate dateCreation;
+	private LocalDate dateDerniereEdition;
 	private int tempPreparation;
 	private int tempCuisson;
 	
@@ -43,6 +46,8 @@ public class Recette extends BaseEntity{
 	@JsonManagedReference
 	@OneToMany(mappedBy = "recette")
 	private Set<CommentaireRecette> commentaires;
-//	private User auteur;
+	@JsonBackReference
+	@ManyToOne
+	private User auteur;
 	
 }
