@@ -1,6 +1,5 @@
 package com.edugroupe.demo.web;
 
-import java.awt.print.Pageable;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
@@ -9,6 +8,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -107,14 +108,14 @@ public class RecetteController {
 	@GetMapping(value = "auteur/{id:[0-9]+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	@CrossOrigin("http://localhost:4200")
-	public ResponseEntity<Recette> findAllByAuthor(@RequestParam("auteurId") int auteurId,
+	public ResponseEntity<Page<Recette>> findAllByAuthor(@RequestParam("auteurId") int auteurId,
 			@PageableDefault(page = 0, size = 10) Pageable page) {
 		User user = userRep.findById(auteurId).orElse(null);
 		if (user == null)
-			return new ResponseEntity<Recette>(HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<Page<Recette>>(HttpStatus.NOT_ACCEPTABLE);
 		
-		return null;
-//		return recetteRep.findByAuteur(user, page);
+		Page<Recette> recettes = recetteRep.findByAuteur(user, page);
+		return new ResponseEntity<Page<Recette>>(recettes, HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
