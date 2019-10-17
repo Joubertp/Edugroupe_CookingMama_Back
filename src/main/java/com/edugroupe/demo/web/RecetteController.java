@@ -113,7 +113,8 @@ public class RecetteController {
 		if (user == null)
 			return new ResponseEntity<Recette>(HttpStatus.NOT_ACCEPTABLE);
 		
-		return recetteRep.findByAuteur(user, page);
+		return null;
+//		return recetteRep.findByAuteur(user, page);
 	}
 
 	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
