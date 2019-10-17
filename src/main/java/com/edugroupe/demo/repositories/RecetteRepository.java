@@ -12,6 +12,6 @@ import com.edugroupe.demo.metiers.User;
 @RepositoryRestResource
 public interface RecetteRepository extends PagingAndSortingRepository<Recette, Integer> {
 
-	ResponseEntity<Recette> findByAuteur(User user, Pageable page);
+	//ResponseEntity<Recette> findByAuteur(User user, Pageable page);
 
 }
