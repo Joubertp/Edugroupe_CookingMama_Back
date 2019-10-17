@@ -3,9 +3,9 @@ package com.edugroupe.demo.repositories;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import com.edugroupe.demo.metiers.Ingredient;
+import com.edugroupe.demo.metiers.User;
 
 @RepositoryRestResource
-public interface IngredientRepository extends PagingAndSortingRepository<Ingredient,Integer> {
+public interface UserRepository extends PagingAndSortingRepository<User, Integer>{
 
 }
