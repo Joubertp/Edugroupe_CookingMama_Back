@@ -33,8 +33,8 @@ public class Recette extends BaseEntity{
 	private String nom;
 	private LocalDate dateCreation;
 	private LocalDate dateDerniereEdition;
-	private int tempPreparation;
-	private int tempCuisson;
+	private int tempsPreparation;
+	private int tempsCuisson;
 	
 	@Type( type = "json" )
 	@Column( columnDefinition = "json" )
