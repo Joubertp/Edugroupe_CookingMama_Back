@@ -1,14 +1,12 @@
 package com.edugroupe.demo.metiers;
 
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,17 +15,18 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter @ToString @NoArgsConstructor @AllArgsConstructor
-@Entity 
-public class Ingredient {
+@Entity
+public class IngredientRecette {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private String nom;
-	private String cathegorie;
-	private String caracteristiqueNutritionnelle;
-	private String Descritpion;
+	private String valeur;
 	
-	@JsonManagedReference
-	@OneToMany (mappedBy = "ingredient")
-	private Set<IngredientRecette> refsRecette;
+	@JsonBackReference
+	@ManyToOne
+	private Recette recette;
+	@JsonBackReference
+	@ManyToOne
+	private Ingredient ingredient;
+	
 }
