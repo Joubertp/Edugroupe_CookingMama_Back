@@ -2,6 +2,7 @@ package com.edugroupe.demo.metiers;
 
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class Ingredient {
 	private String nom;
 	private String cathegorie;
 	private String caracteristiqueNutritionnelle;
+	@Column(columnDefinition="TEXT")
 	private String Descritpion;
 	
 	@JsonManagedReference
