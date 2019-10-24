@@ -1,14 +1,18 @@
 package com.edugroupe.demo.web;
 
-import java.awt.print.Pageable;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,14 +29,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.edugroupe.demo.metiers.CommentaireRecette;
 import com.edugroupe.demo.metiers.Ingredient;
+import com.edugroupe.demo.metiers.IngredientRecette;
 import com.edugroupe.demo.metiers.Recette;
 import com.edugroupe.demo.metiers.User;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
-import com.edugroupe.demo.metiers.json.IngredientRecette;
 import com.edugroupe.demo.repositories.IngredientRepository;
 import com.edugroupe.demo.repositories.RecetteRepository;
 import com.edugroupe.demo.repositories.UserRepository;
+
 
 @Controller
 @RequestMapping("recettes")
@@ -55,24 +61,25 @@ public class RecetteController {
 	@CrossOrigin("http://localhost:4200")
 	public Recette InsertTestData() {
 
-		Ingredient i1 = new Ingredient(0, "Lardon", "Viande", "C'est pas pour les vegan ",
-				"C'est meilleur avec des pates");
-
-		Ingredient savedI = ingredientRep.save(i1);
+//		Ingredient i1 = new Ingredient(0, "Lardon", "Viande", 
+//				"C'est pas pour les vegan ",
+//				"C'est meilleur avec des pates",null);
+//
+//		Ingredient savedI = ingredientRep.save(i1);
 
 		Recette r1 = new Recette();
 
 		r1.setDateCreation(LocalDate.now());
 		r1.setNom("Soupe au lardon");
-		r1.setTempPreparation(50);
-		r1.setTempCuisson(80);
+		r1.setTempsPreparation(50);
+		r1.setTempsCuisson(80);
 
-		IngredientRecette ir1 = new IngredientRecette();
-		ir1.setId(savedI.getId());
-		ir1.setValeur("500g");
+//		IngredientRecette ir1 = new IngredientRecette();
+//		ir1.setId(savedI.getId());
+//		ir1.setValeur("500g");
 
-		Set<IngredientRecette> listeIngredients = Stream.of(ir1).collect(Collectors.toSet());
-		r1.setListeIngredients(listeIngredients);
+//		Set<IngredientRecette> listeIngredients = Stream.of(ir1).collect(Collectors.toSet());
+//		r1.setListeIngredients(listeIngredients);
 
 		EtapeRecette er1_1 = new EtapeRecette(1);
 		er1_1.setDescription("portez à ébulition l'eau dans un casserol");
@@ -89,32 +96,26 @@ public class RecetteController {
 		return recetteRep.findById(savedR.getId()).get();
 	}
 
-//	@GetMapping(value="/recettes", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//	@ResponseBody
-//	@CrossOrigin("http://localhost:4200")
-//	public Iterable<Recette> findAll(){
-//		return recetteRep.findAll();
-//	}
-
 	@GetMapping(value = "/{id:[0-9]+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	@CrossOrigin("http://localhost:4200")
 	public ResponseEntity<Recette> findById(@PathVariable("id") int id) {
-		return recetteRep.findById(id).map(o -> new ResponseEntity<>(o, HttpStatus.OK))
-				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		return recetteRep.findById(id)
+				.map( r -> new ResponseEntity<>(r,HttpStatus.OK))
+				.orElse( new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	@GetMapping(value = "auteur/{id:[0-9]+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	@CrossOrigin("http://localhost:4200")
-	public ResponseEntity<Recette> findAllByAuthor(@RequestParam("auteurId") int auteurId,
+	public ResponseEntity<Page<Recette>> findAllByAuthor(@RequestParam("auteurId") int auteurId,
 			@PageableDefault(page = 0, size = 10) Pageable page) {
 		User user = userRep.findById(auteurId).orElse(null);
 		if (user == null)
-			return new ResponseEntity<Recette>(HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<Page<Recette>>(HttpStatus.NOT_ACCEPTABLE);
 		
-		return null;
-//		return recetteRep.findByAuteur(user, page);
+		Page<Recette> recettes = recetteRep.findByAuteurId(user.getId(), page);
+		return new ResponseEntity<Page<Recette>>(recettes,HttpStatus.ACCEPTED);
 	}
 
 	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

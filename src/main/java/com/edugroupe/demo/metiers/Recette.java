@@ -15,7 +15,6 @@ import org.hibernate.annotations.Type;
 
 import com.edugroupe.demo.metiers.json.BaseEntity;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
-import com.edugroupe.demo.metiers.json.IngredientRecette;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -36,9 +35,7 @@ public class Recette extends BaseEntity{
 	private int tempsPreparation;
 	private int tempsCuisson;
 	
-	@Type( type = "json" )
-	@Column( columnDefinition = "json" )
-	private Set<IngredientRecette> listeIngredients;
+
 	@Type( type = "json" )
 	@Column( columnDefinition = "json" )
 	private Set<EtapeRecette> listeEtapes;
@@ -46,6 +43,9 @@ public class Recette extends BaseEntity{
 	@JsonManagedReference
 	@OneToMany(mappedBy = "recette")
 	private Set<CommentaireRecette> commentaires;
+	@JsonManagedReference
+	@OneToMany(mappedBy = "recette")
+	private Set<IngredientRecette> ingredients;
 	@JsonBackReference
 	@ManyToOne
 	private User auteur;
