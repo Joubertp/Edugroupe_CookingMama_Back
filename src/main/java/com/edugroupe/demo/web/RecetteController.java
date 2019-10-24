@@ -2,10 +2,7 @@ package com.edugroupe.demo.web;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,9 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.edugroupe.demo.metiers.CommentaireRecette;
-import com.edugroupe.demo.metiers.Ingredient;
-import com.edugroupe.demo.metiers.IngredientRecette;
 import com.edugroupe.demo.metiers.Recette;
 import com.edugroupe.demo.metiers.User;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
