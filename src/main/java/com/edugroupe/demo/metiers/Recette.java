@@ -34,7 +34,8 @@ public class Recette extends BaseEntity{
 	private LocalDate dateDerniereEdition;
 	private int tempsPreparation;
 	private int tempsCuisson;
-	
+	@Column(columnDefinition="TEXT")
+	private String description;
 
 	@Type( type = "json" )
 	@Column( columnDefinition = "json" )

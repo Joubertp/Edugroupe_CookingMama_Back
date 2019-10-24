@@ -25,7 +25,6 @@ public class IngredientRecette {
 	@JsonBackReference
 	@ManyToOne
 	private Recette recette;
-	@JsonBackReference
 	@ManyToOne
 	private Ingredient ingredient;
 	
