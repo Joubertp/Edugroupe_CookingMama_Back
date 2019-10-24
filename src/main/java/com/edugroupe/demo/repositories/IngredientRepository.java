@@ -8,4 +8,5 @@ import com.edugroupe.demo.metiers.Ingredient;
 @RepositoryRestResource
 public interface IngredientRepository extends PagingAndSortingRepository<Ingredient,Integer> {
 
+	
 }

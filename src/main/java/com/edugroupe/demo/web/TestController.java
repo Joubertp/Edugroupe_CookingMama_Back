@@ -1,7 +1,12 @@
 package com.edugroupe.demo.web;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,19 +18,80 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.edugroupe.demo.constante.CathIngre;
 import com.edugroupe.demo.metiers.Ingredient;
+import com.edugroupe.demo.metiers.IngredientRecette;
+import com.edugroupe.demo.metiers.Recette;
+import com.edugroupe.demo.metiers.json.EtapeRecette;
+import com.edugroupe.demo.repositories.IngredientRecetteRepository;
 import com.edugroupe.demo.repositories.IngredientRepository;
+import com.edugroupe.demo.repositories.RecetteRepository;
+import com.edugroupe.demo.repositories.UserRepository;
 
 @Controller
-@RequestMapping("ingredients")
-public class IngredientController {
+@RequestMapping("test")
+public class TestController {
 
 	@Autowired
+	private RecetteRepository recetteRep;
+	@Autowired
 	private IngredientRepository ingredientRep;
-	
+	@Autowired
+	private IngredientRecetteRepository ingredientRecetteRep;
+	@Autowired
+	private UserRepository userRep;
+
+	@RequestMapping("/greeting")
+	public @ResponseBody String gretting() {
+		return "Hello World!";
+	}
+
 	@GetMapping(value = "/InsertTestBDD", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	@CrossOrigin("http://localhost:4200")
-	public List<Ingredient> insertData(){
+	public List<Object> InsertTestData() {
+
+		List<Object> toReturn = new ArrayList<>();
+		toReturn.add(this.insertDataIngredient());
+		toReturn.add(this.insertDataRecette());
+		
+		return toReturn;
+	}
+	
+	public List<Recette> insertDataRecette(){
+		Recette recette1 = new Recette();
+		List<Recette> toReturn = new ArrayList<>();
+
+		recette1.setDateCreation(LocalDate.now());
+		recette1.setNom("Soupe au lardon");
+		recette1.setTempsPreparation(50);
+		recette1.setTempsCuisson(80);
+		recette1.setDescription("Une soupe bien grasse et bien degeulasse, que je déconseil fortement de manger.");
+
+
+		EtapeRecette erecette1_1 = new EtapeRecette(1);
+		erecette1_1.setDescription("portez à ébulition l'eau dans un casserol");
+		EtapeRecette erecette1_2 = new EtapeRecette(2);
+		erecette1_2.setDescription("ajoutez les lardon");
+		EtapeRecette erecette1_3 = new EtapeRecette(3);
+		erecette1_3.setDescription("utilisez un mixeur pour broyer les lardon");
+
+		Set<EtapeRecette> listeEtape = Stream.of(erecette1_1, erecette1_2, erecette1_3).collect(Collectors.toSet());
+		recette1.setListeEtapes(listeEtape);
+
+		recette1 = recetteRep.save(recette1);
+		
+		IngredientRecette ingrediantRecette1 = new IngredientRecette();
+		ingrediantRecette1.setIngredient(new Ingredient(1));
+		ingrediantRecette1.setRecette(recette1);
+		ingrediantRecette1.setValeur("500g de ");
+		
+		ingrediantRecette1 = ingredientRecetteRep.save(ingrediantRecette1);
+		
+		toReturn.add(recetteRep.findById(recette1.getId()).get());
+		
+		return toReturn;
+	}
+	
+	public List<Ingredient> insertDataIngredient(){
 		
 		List<Ingredient> ingredients = Arrays.asList(
 				new Ingredient(0, "lardon", 
@@ -85,9 +151,7 @@ public class IngredientController {
 		for(Ingredient i : ingredients) {
 			ingredientRep.save(i);
 		}
-		
-		
-		
+				
 		return ingredients;		
 	}
 }

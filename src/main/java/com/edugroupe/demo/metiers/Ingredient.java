@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +29,11 @@ public class Ingredient {
 	@Column(columnDefinition="TEXT")
 	private String Descritpion;
 	
-	@JsonManagedReference
+	@JsonIgnore
 	@OneToMany (mappedBy = "ingredient")
 	private Set<IngredientRecette> refsRecette;
+	
+	public Ingredient(int id) {
+		this.id = id;
+	}
 }
