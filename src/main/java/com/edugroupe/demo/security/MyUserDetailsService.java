@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.edugroupe.demo.metiers.Login;
+import com.edugroupe.demo.metiers.User;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
@@ -22,13 +22,13 @@ public class MyUserDetailsService implements UserDetailsService {
 	@Override
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		TypedQuery<Login> q = em.createQuery(" SELECT l FROM Login as l "
-				+ " LEFT JOIN FETCH l.roles "
-				+ " WHERE l.username = :username ", Login.class);
+		TypedQuery<User> q = em.createQuery(" SELECT u FROM User as u "
+				+ " LEFT JOIN FETCH u.roles "
+				+ " WHERE u.username = :username ", User.class);
 		q.setParameter("username", username);
 		try {	
-			Login login = q.getSingleResult();
-			return new MyUserDetails(login);
+			User user = q.getSingleResult();
+			return new MyUserDetails(user);
 		} catch(NoResultException nre) {
 			throw new UsernameNotFoundException("Utilisateur inconnu");
 		}
