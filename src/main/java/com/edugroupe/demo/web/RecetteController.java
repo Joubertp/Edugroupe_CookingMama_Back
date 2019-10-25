@@ -46,9 +46,11 @@ public class RecetteController {
 	@Autowired
 	private UserRepository userRep;
 
-	@RequestMapping("/greeting")
-	public @ResponseBody String gretting() {
-		return "Hello World!";
+	@RequestMapping("/greetings")
+	@ResponseBody
+	@CrossOrigin("http://localhost:4200")
+	public String greetings() {
+		return "<h1>Hello World!</h1>";
 	}
 
 	@GetMapping(value = "/InsertTestBDD", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
