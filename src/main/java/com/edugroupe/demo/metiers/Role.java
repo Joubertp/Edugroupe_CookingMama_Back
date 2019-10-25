@@ -26,7 +26,7 @@ public class Role {
 	private String roleName;
 	@JsonIgnore
 	@ManyToMany(mappedBy = "roles")
-	private Set<Login> logins;
+	private Set<User> users;
 	
 	public Role(int id, String roleName) {
 		super();

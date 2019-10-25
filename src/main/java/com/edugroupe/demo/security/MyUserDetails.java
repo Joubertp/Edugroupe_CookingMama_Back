@@ -7,20 +7,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.edugroupe.demo.metiers.Login;
+import com.edugroupe.demo.metiers.User;
 
 public class MyUserDetails implements UserDetails {
 
-	private Login login;
+	private User user;
 	
-	public MyUserDetails(Login login) {
+	public MyUserDetails(User user) {
 		super();
-		this.login = login;
+		this.user = user;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.login.getRoles()
+		return this.user.getRoles()
 							.stream()
 							.map(role -> role.getRoleName())
 							.map(roleName -> new SimpleGrantedAuthority(roleName))
@@ -29,12 +29,12 @@ public class MyUserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return login.getPassword();
+		return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return login.getUsername();
+		return user.getUsername();
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class MyUserDetails implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return login.isEnabled();
+		return user.isEnabled();
 	}
 
 }
