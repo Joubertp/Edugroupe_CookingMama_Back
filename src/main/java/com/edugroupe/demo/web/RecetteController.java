@@ -53,6 +53,17 @@ public class RecetteController {
 		
 		return new ResponseEntity<>(r,HttpStatus.OK);
 	}
+	
+	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	@CrossOrigin("http://localhost:4200")
+	public ResponseEntity<Page<Recette>> findAll(@PageableDefault(page = 0, size = 10) Pageable page) {
+		
+		Page<Recette> recettes = recetteRep.findAll(page);
+		recettes.forEach(r -> r.toEraseAllDependancy());
+		
+		return new ResponseEntity<>(recettes,HttpStatus.OK);
+	}
 
 	@GetMapping(value = "auteur/{id:[0-9]+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
@@ -65,6 +76,7 @@ public class RecetteController {
 		
 		Page<Recette> recettes = recetteRep.findByAuteurId(user.getId(), page);
 		recettes.forEach(r -> r.toEraseAllDependancy());
+		
 		return new ResponseEntity<Page<Recette>>(recettes,HttpStatus.ACCEPTED);
 	}
 
