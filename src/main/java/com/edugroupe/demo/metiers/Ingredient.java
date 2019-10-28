@@ -28,12 +28,22 @@ public class Ingredient {
 	private String caracteristiqueNutritionnelle;
 	@Column(columnDefinition="TEXT")
 	private String Descritpion;
-	
-	@JsonIgnore
+		
 	@OneToMany (mappedBy = "ingredient")
 	private Set<IngredientRecette> refsRecette;
 	
 	public Ingredient(int id) {
 		this.id = id;
+	}
+	
+	public void toEraseInfiniteLoop() {
+		this.refsRecette.forEach(ref -> {
+			ref.setIngredient(null);
+			ref.getRecette().toEraseAllDependancy();
+		});	
+	}
+	
+	public void toEraseAllDependancy() {
+		this.refsRecette = null;
 	}
 }
