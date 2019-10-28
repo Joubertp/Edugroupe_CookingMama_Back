@@ -3,7 +3,9 @@ package com.edugroupe.demo.web;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,11 +41,16 @@ public class TestController {
 	@Autowired
 	private UserRepository userRep;
 
+	private Random random = new Random();
+	
 	@RequestMapping("/greeting")
 	public @ResponseBody String gretting() {
 		return "Hello World!";
 	}
 
+	/*
+	 * Inser une liste de donnee de test
+	 */
 	@GetMapping(value = "/InsertTestBDD", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	@CrossOrigin("http://localhost:4200")
@@ -56,7 +63,7 @@ public class TestController {
 		return toReturn;
 	}
 	
-	public List<Recette> insertDataRecette(){
+	public List<Recette> insertDataRecette(){				
 		Recette recette1 = new Recette();
 		List<Recette> toReturn = new ArrayList<>();
 
@@ -66,9 +73,11 @@ public class TestController {
 		recette1.setTempsCuisson(80);
 		recette1.setDescription("Une soupe bien grasse et bien degeulasse, que je déconseil fortement de manger.");
 
-
+		/*
+		 * Liste des etapes
+		 */
 		EtapeRecette erecette1_1 = new EtapeRecette(1);
-		erecette1_1.setDescription("portez à ébulition l'eau dans un casserol");
+		erecette1_1.setDescription("portez à ébulition l'eau dans une casserol");
 		EtapeRecette erecette1_2 = new EtapeRecette(2);
 		erecette1_2.setDescription("ajoutez les lardon");
 		EtapeRecette erecette1_3 = new EtapeRecette(3);
@@ -77,18 +86,112 @@ public class TestController {
 		Set<EtapeRecette> listeEtape = Stream.of(erecette1_1, erecette1_2, erecette1_3).collect(Collectors.toSet());
 		recette1.setListeEtapes(listeEtape);
 
+		/*
+		 * enregistrement de la recette 
+		 */
 		recette1 = recetteRep.save(recette1);
 		
+		/*
+		 * Liste des Ingredients de la recettes
+		 */
 		IngredientRecette ingrediantRecette1 = new IngredientRecette();
 		ingrediantRecette1.setIngredient(new Ingredient(1));
 		ingrediantRecette1.setRecette(recette1);
 		ingrediantRecette1.setValeur("500g de ");
 		
+		/*
+		 * Enregirstrement des ingredients
+		 */
 		ingrediantRecette1 = ingredientRecetteRep.save(ingrediantRecette1);
 		
 		toReturn.add(recetteRep.findById(recette1.getId()).get());
 		
+		/*
+		 * Creation est Insertion de Recettes aleatoires
+		 */
+		
+		int nombre_de_recettes = 40;
+		List<Recette> randomRecettes = generatorRecettes(nombre_de_recettes);
+		for(int i = 0 ; i < nombre_de_recettes; i++) {
+			Recette randomRecette = randomRecettes.get(i);
+			randomRecette = recetteRep.save(randomRecette);
+			
+			Set<IngredientRecette> randomIngredientRecettes = generatorIngredients(randomRecette.getId(),random.nextInt(10)+3);
+			System.out.println(randomIngredientRecettes);
+			randomIngredientRecettes.forEach(ir -> ingredientRecetteRep.save(ir));
+			toReturn.add(randomRecette);
+		}
+		
 		return toReturn;
+	}
+	
+	public List<Recette> generatorRecettes(int number){
+		// Liste d'adjectifs gourmands
+		String[] adjGourmands = {"Succulent","Savoureux","Aromatique","Allégé","Goûteux","Long en bouche","Surprenant","Original","Banal","Ordinaire","Fumant","Surgelé","Fumé","Collant","Pâteux","Craquant","Grumeleux","Gluant","Granuleux","Juteux","Croquant","Moelleux","Texture","Goût","Sec","Bon","Mauvais","Délicieux","Acre","Exquis","Fade","Insipide","Acerbe","Rance","Agéable","Aggressif","Dominant","Fort","Fermenté","Gélatineux","Amer","Sucré","Acide","Astringent","Aigre","Doux","Salé","Crémeux","Epais","Onctueux","Cru","Cuit","Léger","Lourd","Fin","Saignant","A point","Ferme","Copieux","Compact","Dense","Mousseux","Aéré","Acidulé","Chaud","Froid","Tiède","Glacé","Brûlant","Bouillant","Affiné","Liquide","Croustillant","Intense","Gras","Farineux","Serré","Poivré","Epicé","Piquant","Relevé","Fondant","Dur","Tendre","Grillé","Velouté","Brûlé","Calciné","Frais","Pasteurisé","Mou","Pétillant","Doré"};
+		int imax =  adjGourmands.length;
+
+		List<Recette> recettes = new ArrayList<>();
+		
+		for(int i = 0;i < number; i++) {
+			Recette r = new Recette();
+			String nom = adjGourmands[random.nextInt(imax)];
+			
+			if(isVowel(nom.charAt(0)))
+				nom = "L'"+ nom;
+			else
+				nom = "Le "+ nom;
+				
+			nom += " " + adjGourmands[random.nextInt(imax)];
+			
+			r.setNom(nom);
+			r.setTempsPreparation(random.nextInt(200));
+			r.setTempsCuisson(random.nextInt(200));
+			r.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+			
+			r.setListeEtapes(generatorEtapeRecette(random.nextInt(10)+5));
+			
+			recettes.add(r);
+		}
+		
+		return recettes;
+		
+	}
+	
+	public Set<EtapeRecette> generatorEtapeRecette(int number) {
+		String[] actions  = {"Additionner","Ajouter","Allonger","Amener","Aplatir","Aromatiser","Arroser","Assaisonner","Assouplir","Badigeonner","Battre","Beurrer","Blanchir","Bouillir","Braiser","Brider","Chauffer","Chemiser","Chiffonner","Choisir","Ciseler","Coller","Colorer","Compléter","Compter","Concasser","Confectionner","Couper","Couvrir","Cuire","Débarrasser","Débiter","Décoquiller","Décorer","Décortiquer","Dégermer","Déglacer","Dégorger","Délayer","Démouler","Dénoyauter","Désosser","Dessaler","Dessécher","Détailler","Détendre","Diluer","Disposer","Dissoudre","Donner","Dorer","Dresser","Ébarber","Ébouillanter","Écailler","Écraser","Écumer","Effeuiller","Effiler","Effilocher","Égoutter","Égrapper","Égrener","Émincer","Emplir","Émulsionner","Enfermer","Enfourner","Entreposer","Envelopper","Épaissir","Épépiner","Éponger","Équeuter","Essorer","Essuyer","Étaler","Étendre","Étuver","Évider","Façonner","Farcir","Fariner","Fendre","Ficeler","Filtrer","Flamber","Foncer","Fondre","Fouetter","Fourrer","Frémir","Frire","Froisser","Frotter","Garnir","Glacer","Gonfler","Gratiner"};
+		String[] ingedient = {"le beurre","la crème fraîche liquide","la crème fraîche semi épaisse","le gruyère râpé","les œufs","le fromage blanc","les yaourts nature","un fromage à pâte dur","le lait","la moutarde","le citron","pâte à tarte brisée prête à dérouler","le jambon","la salade ou de la mâche (elle accompagne aussi bien les tartes, quiches salées que les plats d’hiver comme tartiflette…)","les pâtes","le riz","la semoule ou du boulgour","les boîtes de champignons de paris émincés ou entiers","le thon au naturel","la pulpe de tomates","les tomates pelées"," si vous avez un jardin, mettez en bocaux les tomates entières, elles seront ramollies dues à la stérilisation à chaud les bocaux mais elles peuvent remplacer les tomates pelées dans les préparations l’hiver.","les lentilles (en boîtes ou sèches)","le coulis de tomate","un pot de tomates séchées","le concentré de tomates","les cubes de bouillon de volaille","les cubes de bouillon de bœuf","les cubes de bouillon de légumes","l’huile d’olive","l’huile de tournesol ou autre (colza, pépins de raisins..)","le vinaigre balsamique ou vinaigre de vin","le court-bouillon","le vin blanc pour cuisiner","oignons","ail","échalotes","les pommes de terre","les fruits et les légumes de saisons","la farine","le sucre blanc ou roux","la fécule de maïs ou maïzena","la levure","le sucre vanillé","les raisins secs","  un pot de miel","une tablette de chocolat pour la cuisine","les gâteaux secs comme les petits beurres ou les speculoos"," feuilles de laurier","branches de thym","herbes de Provence"," coriandre moulue"," paprika"," noix de muscade ou muscade moulue","clous de girofle","cannelle","aneth","curry"};
+		
+		Set<EtapeRecette> etapeRecettes = new HashSet<>();
+		for(int i = 0; i < number; i++) {
+			EtapeRecette etapeRecette = new EtapeRecette();
+			String description = actions[random.nextInt(actions.length)]
+			                             + " " + ingedient[random.nextInt(ingedient.length)];
+			etapeRecette.setDescription(description);
+			etapeRecette.setNumero(i+1);
+			etapeRecettes.add(etapeRecette);
+		}
+		System.out.println("Etapes recette : "+ etapeRecettes);
+		
+		return etapeRecettes;
+	}
+	
+	public static boolean isVowel(char c) {
+		  return "AEIOUY".indexOf(c) != -1;
+		}
+	
+	public Set<IngredientRecette> generatorIngredients(int idRecette, int number){
+		Set<IngredientRecette> ingredients = new HashSet<>();
+		
+		for(int i = 0; i < number; i++) {
+			IngredientRecette ingredientRecette = new IngredientRecette();
+			Ingredient ingredient = new Ingredient();
+			ingredient.setId(random.nextInt(13)+1);
+			ingredientRecette.setIngredient(ingredient);
+			ingredientRecette.setValeur("3T de/d' ");
+			ingredients.add(ingredientRecette);
+		}
+		
+		return ingredients;
 	}
 	
 	public List<Ingredient> insertDataIngredient(){
