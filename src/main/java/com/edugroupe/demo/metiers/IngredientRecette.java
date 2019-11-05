@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @ToString(exclude =  {"recette","ingredient"}) @NoArgsConstructor @AllArgsConstructor
 @Entity
 public class IngredientRecette {
 
@@ -22,7 +23,6 @@ public class IngredientRecette {
 	private int id;
 	private String valeur;
 	
-	@JsonBackReference
 	@ManyToOne
 	private Recette recette;
 	@ManyToOne

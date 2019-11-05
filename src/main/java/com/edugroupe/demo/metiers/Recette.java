@@ -16,6 +16,7 @@ import org.hibernate.annotations.Type;
 import com.edugroupe.demo.metiers.json.BaseEntity;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString @NoArgsConstructor
+@Getter @Setter @ToString(exclude = {"commentaires","ingredients","auteur"}) @NoArgsConstructor
 @Entity 
 public class Recette extends BaseEntity{
 
@@ -41,14 +42,25 @@ public class Recette extends BaseEntity{
 	@Column( columnDefinition = "json" )
 	private Set<EtapeRecette> listeEtapes;
 	
-	@JsonManagedReference
 	@OneToMany(mappedBy = "recette")
 	private Set<CommentaireRecette> commentaires;
-	@JsonManagedReference
 	@OneToMany(mappedBy = "recette")
 	private Set<IngredientRecette> ingredients;
-	@JsonBackReference
 	@ManyToOne
 	private User auteur;
 	
+	public void toEraseInfiniteLoop() {
+		this.ingredients.forEach(i -> {
+			i.setRecette(null);
+			i.getIngredient().setRefsRecette(null);
+		});	
+		this.commentaires = null;
+		this.auteur = null;
+	}
+	
+	public void toEraseAllDependancy() {
+		this.commentaires = null;
+		this.ingredients = null;
+		this.auteur = null;
+	}
 }

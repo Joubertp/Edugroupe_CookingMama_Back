@@ -12,4 +12,7 @@ public interface IngredientRecetteRepository extends PagingAndSortingRepository<
 
 	Set<IngredientRecette> findByIngredientId(int id);
 	
+	Set<IngredientRecette> findByRecetteId(int id);
+	
+	
 }
