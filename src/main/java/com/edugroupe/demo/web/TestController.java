@@ -51,7 +51,7 @@ public class TestController {
 	/*
 	 * Inser une liste de donnee de test
 	 */
-	@GetMapping(value = "/InsertTestBDD", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(value = "/insertTestBDD", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	@CrossOrigin("http://localhost:4200")
 	public List<Object> InsertTestData() {
