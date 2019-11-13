@@ -6,9 +6,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.edugroupe.demo.metiers.Recette;
+import com.edugroupe.demo.repositories.custom.RecetteRepositoryCustom;
 
 @RepositoryRestResource
-public interface RecetteRepository extends PagingAndSortingRepository<Recette, Integer> {
+public interface RecetteRepository extends PagingAndSortingRepository<Recette, Integer>, RecetteRepositoryCustom {
 
 	Page<Recette> findByAuteurId(int userId, Pageable page);
 
