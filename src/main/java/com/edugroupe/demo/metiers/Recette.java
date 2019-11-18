@@ -48,6 +48,8 @@ public class Recette extends BaseEntity{
 	private Set<IngredientRecette> ingredients;
 	@ManyToOne
 	private User auteur;
+	@OneToMany(mappedBy = "recette")
+	private Set<ImageRecette> images;
 	
 	public void toEraseInfiniteLoop() {
 		this.ingredients.forEach(i -> {
@@ -56,11 +58,13 @@ public class Recette extends BaseEntity{
 		});	
 		this.commentaires = null;
 		this.auteur = null;
+		this.images = null;
 	}
 	
 	public void toEraseAllDependancy() {
 		this.commentaires = null;
 		this.ingredients = null;
 		this.auteur = null;
+		this.images = null;
 	}
 }
