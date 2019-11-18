@@ -8,4 +8,5 @@ import com.edugroupe.demo.metiers.User;
 @RepositoryRestResource
 public interface UserRepository extends PagingAndSortingRepository<User, Integer>{
 
+	User findByUsername(String username);
 }
