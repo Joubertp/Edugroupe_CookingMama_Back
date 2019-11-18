@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,7 +61,24 @@ public class RecetteController {
 	public ResponseEntity<Page<Recette>> findAll(@PageableDefault(page = 0, size = 10) Pageable page) {
 		
 		Page<Recette> recettes = recetteRep.findAll(page);
+		if(recettes.getSize() == 0) {
+			System.err.println("Rien ne vas plus ! La BDD est vide !");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
 		recettes.forEach(r -> r.toEraseAllDependancy());
+		
+		return new ResponseEntity<>(recettes,HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/find", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	@CrossOrigin("http://localhost:4200")
+	public ResponseEntity<Page<Recette>> findByCritere(@PageableDefault(page = 0, size = 10) Pageable page,Recette critere) {
+		Page<Recette> recettes = recetteRep.findByCritere(critere,page);
+		recettes.forEach(r -> r.toEraseAllDependancy());
+		if(recettes.isEmpty())
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		
 		return new ResponseEntity<>(recettes,HttpStatus.OK);
 	}
@@ -117,5 +135,7 @@ public class RecetteController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	
 
 }

@@ -27,7 +27,7 @@ public class Ingredient {
 	private String cathegorie;
 	private String caracteristiqueNutritionnelle;
 	@Column(columnDefinition="TEXT")
-	private String Descritpion;
+	private String descritpion;
 		
 	@OneToMany (mappedBy = "ingredient")
 	private Set<IngredientRecette> refsRecette;
