@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.data.domain.Page;
@@ -25,15 +26,27 @@ public class RecetteRepositoryImpl implements RecetteRepositoryCustom{
 	private EntityManager em;
 	
 	@Override
-	public Page<Recette> findByCritere(Recette critere, Pageable page) {
-		if(critere == null || page == null)
+	public Page<Recette> findByCritere(Recette critere, Pageable pageable) {
+		
+		if(critere == null || pageable == null)
 			throw new NullPointerException("L'un des argument de findByCritere() dans RecetteRepositoryImpl est null");
 		
-		int size = page.getPageSize();
-		int start = page.getPageNumber()*size;
-		AtomicBoolean isSetedWhere = new AtomicBoolean(false);
+		int pageSize = pageable.getPageSize();
+		int pageStart = pageable.getPageNumber()*pageSize;
 		HashMap<String,Integer> parameters = new HashMap<>();	    
 
+		String query = creatQuery_FindByCritere(critere,parameters);
+		
+		int pageMax = getNumberPageOfQuery(query,parameters,pageSize);
+				
+		List<Recette> result = getResultQuery(query, parameters, pageSize,  pageStart);
+		
+		return new PageImpl<>(result, pageable ,pageMax);
+	}
+	
+	private String creatQuery_FindByCritere(Recette critere, HashMap<String,Integer> parameters) {
+		AtomicBoolean isSetedWhere = new AtomicBoolean(false);
+		
 		String query = "Select r" 
 				+ LINE_BREAK + "from Recette AS r"
 				+ LINE_BREAK + "JOIN r.ingredients AS ingrRef"
@@ -57,17 +70,29 @@ public class RecetteRepositoryImpl implements RecetteRepositoryCustom{
 			
 		}
 		
+		return query;
+	}
+	
+	private int getNumberPageOfQuery(String query, HashMap<String,Integer> parameters, int pageSize) {		
+		TypedQuery<Recette> typedquery = em.createQuery(query, Recette.class);
+		
+			for (Entry<String, Integer> me : parameters.entrySet()) {
+			      typedquery.setParameter(me.getKey(), me.getValue());
+			    }
+		
+		return typedquery.getResultList().size();
+	}
+	
+	private List<Recette> getResultQuery(String query, HashMap<String,Integer> parameters, int pageSize, int pageStart){
 		TypedQuery<Recette> typedquery = em.createQuery(query, Recette.class)
-				.setFirstResult(start)
-				.setMaxResults(size);
-		
+			.setFirstResult(pageStart)
+			.setMaxResults(pageSize);
+	
 		for (Entry<String, Integer> me : parameters.entrySet()) {
-	          typedquery.setParameter(me.getKey(), me.getValue());
-	        }
+		      typedquery.setParameter(me.getKey(), me.getValue());
+		    }
 		
-		List<Recette> result = typedquery.getResultList();
-
-		return new PageImpl<>(result);
+		return typedquery.getResultList();
 	}
 
 	private String whereOrAnd(AtomicBoolean isSetedWhere) {

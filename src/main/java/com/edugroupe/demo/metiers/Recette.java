@@ -1,6 +1,7 @@
 package com.edugroupe.demo.metiers;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -49,6 +50,21 @@ public class Recette extends BaseEntity{
 	@ManyToOne
 	private User auteur;
 	
+	/*
+	 * Constructors
+	 */
+	public Recette(Set<Ingredient> ingredients) {
+		this();
+		Set<IngredientRecette> ingredientRecettes = new HashSet<>();
+		for(Ingredient ingredient : ingredients) {
+			ingredientRecettes.add(new IngredientRecette(ingredient));
+		}
+		this.ingredients = ingredientRecettes;
+	}
+	
+	/*
+	 * Methods
+	 */
 	public void toEraseInfiniteLoop() {
 		this.ingredients.forEach(i -> {
 			i.setRecette(null);
