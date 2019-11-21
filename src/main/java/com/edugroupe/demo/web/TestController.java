@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.edugroupe.demo.constante.CathIngre;
+import com.edugroupe.demo.constantes.CathIngre;
 import com.edugroupe.demo.metiers.Ingredient;
 import com.edugroupe.demo.metiers.IngredientRecette;
 import com.edugroupe.demo.metiers.Recette;

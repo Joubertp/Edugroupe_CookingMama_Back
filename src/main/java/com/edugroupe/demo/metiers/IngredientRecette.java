@@ -28,4 +28,12 @@ public class IngredientRecette {
 	@ManyToOne
 	private Ingredient ingredient;
 	
+	/*
+	 * Constructors
+	 */
+	public IngredientRecette(Ingredient ingredient) {
+		this();
+		this.ingredient = ingredient;
+	}
+	
 }
