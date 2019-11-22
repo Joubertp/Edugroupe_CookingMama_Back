@@ -79,4 +79,9 @@ public class Recette extends BaseEntity{
 		this.ingredients = null;
 		this.auteur = null;
 	}
+
+	public Recette(int idRecette) {
+		this();
+		this.id = idRecette;
+	}
 }

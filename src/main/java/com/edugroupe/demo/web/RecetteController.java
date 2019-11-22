@@ -7,7 +7,10 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,10 +62,13 @@ public class RecetteController {
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	@CrossOrigin("http://localhost:4200")
-	public ResponseEntity<Page<Recette>> find(	@PageableDefault(page = 0, size = 10) Pageable page,
-												@RequestParam("idIngredients") Optional<int[]> OpIdIngredients) {
+	public ResponseEntity<Page<Recette>> find(	@PageableDefault(	page = 0, 
+																	size = 10, 
+																	sort = "dateDerniereEdition",
+																	direction = Direction.DESC) 
+																	Pageable page,
+													@RequestParam("idIngredients") Optional<int[]> OpIdIngredients) {
 		
-		System.out.println("fonction find");
 		Page<Recette> recettes;
 		if(OpIdIngredients.isPresent()) {
 			int[] idIngredients = OpIdIngredients.get();
