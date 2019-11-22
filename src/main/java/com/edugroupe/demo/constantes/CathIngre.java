@@ -13,5 +13,9 @@ public interface CathIngre {
 	String EPICE = "épice";
 	String BOUILLON = "bouillon";
 	String LEGUME = "légume";
+	String VIN = "vin";
+	String CHAMPIGNON = "champignon";
+	String FARINE = "farine";
+	String HERBE = "herbe";
 
 }

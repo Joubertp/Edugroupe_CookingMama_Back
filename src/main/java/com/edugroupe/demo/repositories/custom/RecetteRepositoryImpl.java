@@ -1,19 +1,22 @@
 package com.edugroupe.demo.repositories.custom;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 
 import com.edugroupe.demo.metiers.IngredientRecette;
 import com.edugroupe.demo.metiers.Recette;
@@ -32,19 +35,20 @@ public class RecetteRepositoryImpl implements RecetteRepositoryCustom{
 			throw new NullPointerException("L'un des argument de findByCritere() dans RecetteRepositoryImpl est null");
 		
 		int pageSize = pageable.getPageSize();
-		int pageStart = pageable.getPageNumber()*pageSize;
+		Sort sortList = pageable.getSort();
+		
 		HashMap<String,Integer> parameters = new HashMap<>();	    
 
-		String query = creatQuery_FindByCritere(critere,parameters);
+		String query = creatQuery_FindByCritere(critere,parameters,sortList);
 		
 		int pageMax = getNumberPageOfQuery(query,parameters,pageSize);
 				
-		List<Recette> result = getResultQuery(query, parameters, pageSize,  pageStart);
+		List<Recette> result = getResultQuery(query, parameters, pageable);
 		
 		return new PageImpl<>(result, pageable ,pageMax);
 	}
 	
-	private String creatQuery_FindByCritere(Recette critere, HashMap<String,Integer> parameters) {
+	private String creatQuery_FindByCritere(Recette critere, HashMap<String,Integer> parameters, Sort sortList) {
 		AtomicBoolean isSetedWhere = new AtomicBoolean(false);
 		
 		String query = "Select r" 
@@ -67,9 +71,14 @@ public class RecetteRepositoryImpl implements RecetteRepositoryCustom{
 			query += ")"
 					+LINE_BREAK + "Group By r.id"
 					+LINE_BREAK + "Having Count(distinct i) = "+listIngredients.size();
-			
 		}
+		Iterator<Order> sortIter = sortList.iterator();
 		
+		while (sortIter.hasNext()) {
+			Order order = sortIter.next();
+			query += LINE_BREAK + "ORDER BY r."+ order.getProperty()+ " "+ order.getDirection();
+		}
+				
 		return query;
 	}
 	
@@ -83,7 +92,9 @@ public class RecetteRepositoryImpl implements RecetteRepositoryCustom{
 		return typedquery.getResultList().size();
 	}
 	
-	private List<Recette> getResultQuery(String query, HashMap<String,Integer> parameters, int pageSize, int pageStart){
+	private List<Recette> getResultQuery(String query, HashMap<String,Integer> parameters, Pageable pageable){
+		int pageSize = pageable.getPageSize();
+		int pageStart = pageable.getPageNumber()*pageSize;
 		TypedQuery<Recette> typedquery = em.createQuery(query, Recette.class)
 			.setFirstResult(pageStart)
 			.setMaxResults(pageSize);
