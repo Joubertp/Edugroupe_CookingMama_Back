@@ -1,5 +1,6 @@
 package com.edugroupe.demo.metiers;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -32,10 +33,16 @@ public class Ingredient {
 	@OneToMany (mappedBy = "ingredient")
 	private Set<IngredientRecette> refsRecette;
 	
+	/*
+	 * Constructors
+	 */
 	public Ingredient(int id) {
 		this.id = id;
 	}
 	
+	/*
+	 * Methods
+	 */
 	public void toEraseInfiniteLoop() {
 		this.refsRecette.forEach(ref -> {
 			ref.setIngredient(null);
@@ -45,5 +52,13 @@ public class Ingredient {
 	
 	public void toEraseAllDependancy() {
 		this.refsRecette = null;
+	}
+	
+	public static Set<Ingredient> creatListWith(int[] idList){
+		Set<Ingredient> ingredientList = new HashSet<>();
+		for(int id : idList) {
+			ingredientList.add(new Ingredient(id));
+		}
+		return ingredientList;
 	}
 }

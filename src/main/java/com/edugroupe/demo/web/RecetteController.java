@@ -3,11 +3,14 @@ package com.edugroupe.demo.web;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.edugroupe.demo.metiers.Ingredient;
 import com.edugroupe.demo.metiers.Recette;
 import com.edugroupe.demo.metiers.User;
 import com.edugroupe.demo.repositories.RecetteRepository;
@@ -58,30 +62,42 @@ public class RecetteController {
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	@CrossOrigin("http://localhost:4200")
-	public ResponseEntity<Page<Recette>> findAll(@PageableDefault(page = 0, size = 10) Pageable page) {
+	public ResponseEntity<Page<Recette>> v(	@PageableDefault(	page = 0, 
+																	size = 10, 
+																	sort = "dateDerniereEdition",
+																	direction = Direction.DESC) 
+																	Pageable page,
+													@RequestParam("idIngredients") Optional<int[]> opIdIngredients,
+													@RequestParam("nomRecette") Optional<String> oPnomRecette) {
 		
-		Page<Recette> recettes = recetteRep.findAll(page);
-		if(recettes.getSize() == 0) {
-			System.err.println("Rien ne vas plus ! La BDD est vide !");
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		Page<Recette> recettes;
+		if(opIdIngredients.isPresent() || oPnomRecette.isPresent()) {
+			Recette critere = new Recette();
+			if(opIdIngredients.isPresent()) {
+				int[] idIngredients = opIdIngredients.get();
+				Set<Ingredient> ingredients = Ingredient.creatListWith(idIngredients);
+				critere.setIngredients(ingredients);							
+			}
+			if(oPnomRecette.isPresent()) {
+				String nomRecette = oPnomRecette.get();
+				critere.setNom(nomRecette);
+			}
+			recettes = recetteRep.findByCritere(critere,page);			
+		} else {			
+			recettes = recetteRep.findAll(page);
+			if(recettes.isEmpty()) 
+				System.err.println("Rien ne vas plus ! La BDD est vide !");
+		}		
+				
+		if(recettes.isEmpty()) {
+			return new ResponseEntity<>( HttpStatus.NOT_FOUND);
 		}
 		
 		recettes.forEach(r -> r.toEraseAllDependancy());
 		
 		return new ResponseEntity<>(recettes,HttpStatus.OK);
 	}
-	
-	@GetMapping(value = "/find", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
-	@CrossOrigin("http://localhost:4200")
-	public ResponseEntity<Page<Recette>> findByCritere(@PageableDefault(page = 0, size = 10) Pageable page,Recette critere) {
-		Page<Recette> recettes = recetteRep.findByCritere(critere,page);
-		recettes.forEach(r -> r.toEraseAllDependancy());
-		if(recettes.isEmpty())
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		
-		return new ResponseEntity<>(recettes,HttpStatus.OK);
-	}
+
 
 	@GetMapping(value = "auteur/{id:[0-9]+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
