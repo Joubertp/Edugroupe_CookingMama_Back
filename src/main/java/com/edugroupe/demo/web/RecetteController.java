@@ -62,18 +62,26 @@ public class RecetteController {
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	@CrossOrigin("http://localhost:4200")
-	public ResponseEntity<Page<Recette>> find(	@PageableDefault(	page = 0, 
+	public ResponseEntity<Page<Recette>> v(	@PageableDefault(	page = 0, 
 																	size = 10, 
 																	sort = "dateDerniereEdition",
 																	direction = Direction.DESC) 
 																	Pageable page,
-													@RequestParam("idIngredients") Optional<int[]> OpIdIngredients) {
+													@RequestParam("idIngredients") Optional<int[]> opIdIngredients,
+													@RequestParam("nomRecette") Optional<String> oPnomRecette) {
 		
 		Page<Recette> recettes;
-		if(OpIdIngredients.isPresent()) {
-			int[] idIngredients = OpIdIngredients.get();
-			Set<Ingredient> ingredients = Ingredient.creatListWith(idIngredients);
-			Recette critere = new Recette(ingredients);			
+		if(opIdIngredients.isPresent() || oPnomRecette.isPresent()) {
+			Recette critere = new Recette();
+			if(opIdIngredients.isPresent()) {
+				int[] idIngredients = opIdIngredients.get();
+				Set<Ingredient> ingredients = Ingredient.creatListWith(idIngredients);
+				critere.setIngredients(ingredients);							
+			}
+			if(oPnomRecette.isPresent()) {
+				String nomRecette = oPnomRecette.get();
+				critere.setNom(nomRecette);
+			}
 			recettes = recetteRep.findByCritere(critere,page);			
 		} else {			
 			recettes = recetteRep.findAll(page);

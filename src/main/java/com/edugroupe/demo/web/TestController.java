@@ -333,12 +333,15 @@ public class TestController {
 		soupeAuLardon.setNom("Soupe au Lardon");
 		soupeAuLardon.setTempsPreparation(50);
 		soupeAuLardon.setTempsCuisson(80);
-		soupeAuLardon.setDescription("Une soupe bien grasse et bien degeulasse, que je déconseil fortement de manger.");
+		soupeAuLardon.setDescription("Une soupe bien grasse et bien dégueulasse, que je déconseille fortement de manger.");
 		
 		soupeAuLardon.setListeEtapes(Stream.of(
-				new EtapeRecette(1,"portez à ébulition l'eau dans une casserol"),
-				new EtapeRecette(2,"ajoutez les lardon"), 
-				new EtapeRecette(3,"utilisez un mixeur pour broyer les lardon")).collect(Collectors.toSet()));
+				new EtapeRecette(1,"Portez à ébulition l'eau dans une casserole"),
+				new EtapeRecette(2,"Ajoutez les lardons"), 
+				new EtapeRecette(3,"Utilisez un mixeur pour broyer les lardons"),
+				new EtapeRecette(4,"Laissez mijoter"),
+				new EtapeRecette(5,"Voilà c'est prêt !")
+				).collect(Collectors.toSet()));
 		
 		//Enregistrement de la recette dans la bdd
 		soupeAuLardon = recetteRep.save(soupeAuLardon);

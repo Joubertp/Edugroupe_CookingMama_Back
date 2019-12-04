@@ -11,14 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
 import com.edugroupe.demo.metiers.json.BaseEntity;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -65,6 +63,15 @@ public class Recette extends BaseEntity{
 	/*
 	 * Methods
 	 */
+	@Transient
+	public void setIngredients(Set<Ingredient> ingredients) {
+		Set<IngredientRecette> ingredientRecettes = new HashSet<>();
+		for(Ingredient ingredient : ingredients) {
+			ingredientRecettes.add(new IngredientRecette(ingredient));
+		}
+		this.ingredients = ingredientRecettes;
+	}
+	
 	public void toEraseInfiniteLoop() {
 		this.ingredients.forEach(i -> {
 			i.setRecette(null);
