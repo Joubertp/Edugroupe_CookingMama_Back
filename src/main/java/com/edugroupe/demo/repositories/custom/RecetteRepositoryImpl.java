@@ -1,22 +1,24 @@
 package com.edugroupe.demo.repositories.custom;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.projection.ProjectionFactory;
 
 import com.edugroupe.demo.metiers.IngredientRecette;
 import com.edugroupe.demo.metiers.Recette;
@@ -28,8 +30,15 @@ public class RecetteRepositoryImpl implements RecetteRepositoryCustom {
 	@PersistenceContext
 	private EntityManager em;
 
+	private final ProjectionFactory projectionFactory;
+	
+	@Autowired
+	public RecetteRepositoryImpl(ProjectionFactory projectionFactory) {
+		this.projectionFactory = projectionFactory;
+	}
+	
 	@Override
-	public Page<Recette> findByCritere(Recette critere, Pageable pageable) {
+	public <T>Page<T> findByCritere(Recette critere, Pageable pageable, Class<T> type) {
 
 		if (critere == null || pageable == null)
 			throw new NullPointerException("L'un des argument de findByCritere() dans RecetteRepositoryImpl est null");
@@ -41,9 +50,15 @@ public class RecetteRepositoryImpl implements RecetteRepositoryCustom {
 
 		String query = creatQuery_FindByCritere(critere, integers_param, string_param, sortList);
 		int pageMax = getNumberPageOfQuery(query, integers_param, string_param, pageSize);
-		List<Recette> result = getResultQuery(query, integers_param, string_param, pageable);
-
-		return new PageImpl<>(result, pageable, pageMax);
+		List<Recette> results = getResultQuery(query, integers_param, string_param, pageable);
+		
+		List<T> resultsProjection = new ArrayList<>();
+		for(Recette r : results) {
+			T projection = projectionFactory.createProjection(type,r);
+			resultsProjection.add(projection);
+		}
+		
+		return new PageImpl<>(resultsProjection, pageable, pageMax);
 	}
 
 	private String creatQuery_FindByCritere(Recette critere, HashMap<String, Integer> integers_param,
@@ -56,7 +71,7 @@ public class RecetteRepositoryImpl implements RecetteRepositoryCustom {
 			query += LINE_BREAK + "JOIN r.ingredients AS ingrRef" + LINE_BREAK + "JOIN ingrRef.ingredient AS i";
 		}
 
-		if (critere.getNom() != null && !critere.getNom().isBlank()) {
+		if (critere.getNom() != null && !critere.getNom().isEmpty()) {
 			query += LINE_BREAK + whereOrAnd(isSetedWhere)+" r.nom LIKE :paramNomRecette";
 			string_param.put("paramNomRecette", "%"+critere.getNom()+"%");
 		}
@@ -104,7 +119,8 @@ public class RecetteRepositoryImpl implements RecetteRepositoryCustom {
 			HashMap<String, String> string_param, Pageable pageable) {
 		int pageSize = pageable.getPageSize();
 		int pageStart = pageable.getPageNumber() * pageSize;
-		TypedQuery<Recette> typedquery = em.createQuery(query, Recette.class).setFirstResult(pageStart)
+		TypedQuery<Recette> typedquery = em.createQuery(query, Recette.class)
+				.setFirstResult(pageStart)
 				.setMaxResults(pageSize);
 
 		for (Entry<String, Integer> me : integers_param.entrySet()) {
