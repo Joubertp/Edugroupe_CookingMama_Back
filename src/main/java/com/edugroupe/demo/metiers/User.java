@@ -35,7 +35,7 @@ public class User {
 	@ManyToMany
 	private Set<Role> roles;
 	//**************************************
-	@JsonManagedReference
+	@JsonIgnore
 	@OneToMany(mappedBy = "auteur")
 	private Set<Recette> recettes;
 	
