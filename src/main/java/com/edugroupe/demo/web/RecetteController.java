@@ -35,16 +35,14 @@ import com.edugroupe.demo.repositories.UserRepository;
 
 @Controller
 @RequestMapping("recettes")
+@CrossOrigin("http://localhost:4200")
 public class RecetteController {
 
-	@Autowired
-	private RecetteRepository recetteRep;
-	@Autowired
-	private UserRepository userRep;
+	@Autowired	private RecetteRepository recetteRep;
+	@Autowired	private UserRepository userRep;
 
 	@GetMapping(value = "/{id:[0-9]+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	@CrossOrigin("http://localhost:4200")
 	public ResponseEntity<RecetteView> findById(@PathVariable("id") int id) {
 
 		Optional<RecetteView> op = recetteRep.findById(id, RecetteView.class);
@@ -56,7 +54,6 @@ public class RecetteController {
 
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	@CrossOrigin("http://localhost:4200")
 	public ResponseEntity<Page<RecetteView>> findByCritere(
 			@PageableDefault(page = 0, size = 10, sort = "dateDerniereEdition", direction = Direction.DESC) Pageable page,
 			@RequestParam("idIngredients") Optional<int[]> opIdIngredients,
@@ -95,7 +92,6 @@ public class RecetteController {
 
 	@GetMapping(value = "auteur/{id:[0-9]+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	@CrossOrigin("http://localhost:4200")
 	public ResponseEntity<Page<RecetteView>> findAllByAuthor(@RequestParam("auteurId") int auteurId,
 			@PageableDefault(page = 0, size = 10) Pageable page) {
 		User user = userRep.findById(auteurId).orElse(null);
@@ -108,7 +104,6 @@ public class RecetteController {
 
 	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@CrossOrigin("http://localhost:4200")
 	public ResponseEntity<Recette> creat(@RequestBody Recette r, @RequestParam("auteurId") int auteurId) {
 		User user = userRep.findById(auteurId).orElse(null);
 		if (user == null)
@@ -121,7 +116,6 @@ public class RecetteController {
 
 	@PutMapping(value = "/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@CrossOrigin("http://localhost:4200")
 	public ResponseEntity<Recette> update(@RequestBody Recette r, @RequestParam("auteurId") int auteurId) {
 		User user = userRep.findById(auteurId).orElse(null);
 		if (user == null)
@@ -134,7 +128,6 @@ public class RecetteController {
 
 	@DeleteMapping(value = "/{id:[0-9]+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	@CrossOrigin("http://localhost:4200")
 	public ResponseEntity<Map<String, Object>> deleteLivre(@PathVariable("id") int id) {
 		if (recetteRep.existsById(id)) {
 			recetteRep.deleteById(id);
