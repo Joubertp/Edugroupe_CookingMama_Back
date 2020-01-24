@@ -5,9 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.edugroupe.demo.metiers.Recette;
+import com.edugroupe.demo.metiers.projections.RecetteView;
 
 public interface RecetteRepositoryCustom {
 
-	Page<Recette> findByCritere(Recette critere, Pageable page);
+	<T> Page<T> findByCritere(Recette critere, Pageable page, Class<T> type );
 	
 }

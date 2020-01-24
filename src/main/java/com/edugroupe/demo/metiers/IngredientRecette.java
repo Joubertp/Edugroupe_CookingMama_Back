@@ -21,16 +21,17 @@ public class IngredientRecette {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private String valeur;
-	
+	private double quantite;
+	private String text;
+	//**************************************
+	@JsonIgnore
 	@ManyToOne
 	private Recette recette;
+	@JsonIgnore
 	@ManyToOne
 	private Ingredient ingredient;
 	
-	/*
-	 * Constructors
-	 */
+	//* Constructors ***********************
 	public IngredientRecette(Ingredient ingredient) {
 		this();
 		this.ingredient = ingredient;

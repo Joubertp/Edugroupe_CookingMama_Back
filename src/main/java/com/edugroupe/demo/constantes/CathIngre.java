@@ -17,5 +17,6 @@ public interface CathIngre {
 	String CHAMPIGNON = "champignon";
 	String FARINE = "farine";
 	String HERBE = "herbe";
+	String CONDIMENT = "condiment";
 
 }
