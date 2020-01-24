@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class CommentaireRecette {
 	private String contenue;
 	private LocalDate dateCreation;
 	
-	@JsonBackReference
+	@JsonIgnore
 	@ManyToOne
 	private Recette recette;
 }

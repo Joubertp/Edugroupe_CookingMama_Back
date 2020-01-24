@@ -22,27 +22,32 @@ import com.edugroupe.demo.security.MyUserDetailsService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+	@Autowired	private MyUserDetailsService userDetailsService;
+	
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
-	@Autowired
-	private MyUserDetailsService userDetailsService;
-	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		super.configure(auth);
-		auth.userDetailsService(userDetailsService);
+		auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		super.configure(http);
-		http.authorizeRequests().antMatchers("/**").hasAnyAuthority("ADMIN")
+		http.authorizeRequests()
+								.antMatchers("/recette**","/recette").permitAll()
+								.antMatchers("/users**","/users/").authenticated()
 								.and().formLogin()
 								.and().logout();
+								;
+								
+//								.and().csrf().disable().cors()
+//								.and().httpBasic();		
+		// .antMatchers("/**").hasAnyAuthority("ADMIN")
 		
+		// Corectif pour pallier au CORS policy 
 		http.cors().configurationSource(new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {

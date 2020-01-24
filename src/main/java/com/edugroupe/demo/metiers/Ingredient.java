@@ -25,35 +25,33 @@ public class Ingredient {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String nom;
-	private String cathegorie;
 	private String caracteristiqueNutritionnelle;
 	@Column(columnDefinition="TEXT")
 	private String descritpion;
-		
+	//**************************************	
+	@JsonIgnore
 	@OneToMany (mappedBy = "ingredient")
 	private Set<IngredientRecette> refsRecette;
+	@JsonIgnore
+	@OneToMany (mappedBy = "ingredients")
+	private Set<CathegorieIngredient> cathegories;
 	
-	/*
-	 * Constructors
-	 */
+	//* Constructors ***********************
 	public Ingredient(int id) {
 		this.id = id;
 	}
 	
-	/*
-	 * Methods
-	 */
-	public void toEraseInfiniteLoop() {
-		this.refsRecette.forEach(ref -> {
-			ref.setIngredient(null);
-			ref.getRecette().toEraseAllDependancy();
-		});	
+	public Ingredient(String nom,String descritpion, String... cathIngres) {
+		this();
+		this.nom = nom;
+		this.cathegories = new HashSet<>();
+		for(String cathIngre : cathIngres) {
+			this.cathegories.add(new CathegorieIngredient(cathIngre));			
+		}
+		this.descritpion = descritpion;		
 	}
-	
-	public void toEraseAllDependancy() {
-		this.refsRecette = null;
-	}
-	
+	//** Method ****************************
+
 	public static Set<Ingredient> creatListWith(int[] idList){
 		Set<Ingredient> ingredientList = new HashSet<>();
 		for(int id : idList) {
@@ -61,4 +59,5 @@ public class Ingredient {
 		}
 		return ingredientList;
 	}
+
 }
