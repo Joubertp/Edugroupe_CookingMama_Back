@@ -17,6 +17,7 @@ import com.edugroupe.demo.constantes.CathIngre;
 import com.edugroupe.demo.metiers.Ingredient;
 import com.edugroupe.demo.metiers.IngredientRecette;
 import com.edugroupe.demo.metiers.Recette;
+import com.edugroupe.demo.metiers.User;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
 import com.edugroupe.demo.repositories.IngredientRecetteRepository;
 import com.edugroupe.demo.repositories.IngredientRepository;
@@ -28,14 +29,10 @@ public class DataGenerator {
 
 	private Random random = new Random();
 	
-	@Autowired
-	private RecetteRepository recetteRep;
-	@Autowired
-	private IngredientRepository ingredientRep;
-	@Autowired
-	private IngredientRecetteRepository ingredientRecetteRep;
-//	@Autowired
-//	private UserRepository userRep;
+	@Autowired	private RecetteRepository recetteRep;
+	@Autowired	private IngredientRepository ingredientRep;
+	@Autowired	private IngredientRecetteRepository ingredientRecetteRep;
+	@Autowired	private UserRepository userRep;
 	
 
 	public List<Recette> creatAndSaveDataRecette(){		
@@ -65,7 +62,14 @@ public class DataGenerator {
 		// Liste d'adjectifs gourmands
 		String[] adjGourmands = {"Succulent","Savoureux","Aromatique","Allégé","Goûteux","Long en bouche","Surprenant","Original","Banal","Ordinaire","Fumant","Surgelé","Fumé","Collant","Pâteux","Craquant","Grumeleux","Gluant","Granuleux","Juteux","Croquant","Moelleux","Texture","Goût","Sec","Bon","Mauvais","Délicieux","Acre","Exquis","Fade","Insipide","Acerbe","Rance","Agéable","Aggressif","Dominant","Fort","Fermenté","Gélatineux","Amer","Sucré","Acide","Astringent","Aigre","Doux","Salé","Crémeux","Epais","Onctueux","Cru","Cuit","Léger","Lourd","Fin","Saignant","A point","Ferme","Copieux","Compact","Dense","Mousseux","Aéré","Acidulé","Chaud","Froid","Tiède","Glacé","Brûlant","Bouillant","Affiné","Liquide","Croustillant","Intense","Gras","Farineux","Serré","Poivré","Epicé","Piquant","Relevé","Fondant","Dur","Tendre","Grillé","Velouté","Brûlé","Calciné","Frais","Pasteurisé","Mou","Pétillant","Doré"};
 		int imax =  adjGourmands.length;
-
+		
+		Iterable<User> itAuteurs = userRep.findAll();
+		List<User> auteurs = new ArrayList<>();
+		for(User a : itAuteurs) {
+			auteurs.add(a);
+		}		
+		int auteurMax = auteurs.size() - 1;
+		
 		List<Recette> recettes = new ArrayList<>();
 		
 		for(int i = 0;i < number; i++) {
@@ -86,6 +90,7 @@ public class DataGenerator {
 			r.setListeEtapes(generatorEtapeRecette(random.nextInt(10)+5));
 			r.setDateCreation(createRandomDate(1900, 2019));
 			r.setDateDerniereEdition(r.getDateCreation());
+			r.setAuteur(auteurs.get(random.nextInt(auteurMax)+1));
 			
 			recettes.add(r);
 		}
