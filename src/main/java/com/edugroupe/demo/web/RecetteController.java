@@ -45,7 +45,7 @@ public class RecetteController {
 	public ResponseEntity<Recette> findById(@PathVariable("id") int id) {
 		
 		Optional<Recette> op = recetteRep.findById(id);
-		if(op.isEmpty())
+		if(!op.isPresent())
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		
 		Recette r = op.get();
