@@ -51,6 +51,8 @@ public class Recette extends BaseEntity{
 	@JsonIgnore
 	@ManyToOne
 	private User auteur;
+	@OneToMany(mappedBy = "recette")
+	private Set<ImageRecette> images;
 	
 	/*
 	 * Constructors
@@ -83,6 +85,7 @@ public class Recette extends BaseEntity{
 		});	
 		this.commentaires = null;
 		this.auteur = null;
+		this.images = null;
 	}
 	
 	public void toEraseAllDependancy() {
@@ -90,6 +93,7 @@ public class Recette extends BaseEntity{
 		this.ingredients = null;
 		this.auteur = null;
 		this.listeEtapes = null;
+		this.images = null;
 	}
 
 	public Recette(int idRecette) {
