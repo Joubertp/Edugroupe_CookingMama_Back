@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import com.edugroupe.demo.metiers.User;
+
 public interface RecetteView {
 
 	@Value("#{target.id}")
@@ -16,6 +18,7 @@ public interface RecetteView {
 	int getTempsCuisson();
 	String getDescription();
 	//*****************************
+	User getAuteur();
 	Set<EtapeRecetteView> getListeEtapes();
 	Set<IngredientRecetteView> getIngredients();
 	

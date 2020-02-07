@@ -19,7 +19,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity 
-@Getter @Setter @NoArgsConstructor @ToString(exclude = {"roles", "password"}) 
+@Getter @Setter @NoArgsConstructor @ToString(exclude = {"roles", "password"}) @AllArgsConstructor
 public class User {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +31,8 @@ public class User {
 	@JsonIgnore
 	private String password;
 	private boolean enabled;
+	@Column(columnDefinition="TEXT")
+	private String description;
 	@ManyToMany
 	private Set<Role> roles;
 	//**************************************
@@ -39,13 +41,8 @@ public class User {
 	private Set<Recette> recettes;
 	
 	//**************************************
-	public User(int id, String username, String password, boolean enabled) {
-		super();
-		this.roles = new HashSet<>();
-		this.id = id;
-		this.username = username;
-		this.password = password;
-		this.enabled = enabled;
+	public User(int id, String username, String password, boolean enabled, String description) {
+		this(id,username,password,enabled,description,new HashSet<>(), new HashSet<>());
 	}
 	
 }
