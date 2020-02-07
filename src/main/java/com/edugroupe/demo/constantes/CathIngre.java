@@ -1,4 +1,4 @@
-package com.edugroupe.demo.constante;
+package com.edugroupe.demo.constantes;
 
 /*
  * Liste des cathegories d ingredient
@@ -13,5 +13,10 @@ public interface CathIngre {
 	String EPICE = "épice";
 	String BOUILLON = "bouillon";
 	String LEGUME = "légume";
+	String VIN = "vin";
+	String CHAMPIGNON = "champignon";
+	String FARINE = "farine";
+	String HERBE = "herbe";
+	String CONDIMENT = "condiment";
 
 }
