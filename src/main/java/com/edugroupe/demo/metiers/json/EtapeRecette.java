@@ -16,4 +16,10 @@ public class EtapeRecette implements Serializable{
 	public EtapeRecette(int n) {
 		this.numero = n;
 	}
+
+	public EtapeRecette(int numero, String description) {
+		this();
+		this.numero = numero;
+		this.description = description;
+	}
 }

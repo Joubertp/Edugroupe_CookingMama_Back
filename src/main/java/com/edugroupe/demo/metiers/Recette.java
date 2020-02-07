@@ -1,6 +1,7 @@
 package com.edugroupe.demo.metiers;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -10,14 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
 import com.edugroupe.demo.metiers.json.BaseEntity;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,19 +37,46 @@ public class Recette extends BaseEntity{
 	private int tempsCuisson;
 	@Column(columnDefinition="TEXT")
 	private String description;
-
+	//**************************************
 	@Type( type = "json" )
 	@Column( columnDefinition = "json" )
 	private Set<EtapeRecette> listeEtapes;
-	
+	//**************************************
+	@JsonIgnore
 	@OneToMany(mappedBy = "recette")
 	private Set<CommentaireRecette> commentaires;
+	@JsonIgnore
 	@OneToMany(mappedBy = "recette")
 	private Set<IngredientRecette> ingredients;
+	@JsonIgnore
 	@ManyToOne
 	private User auteur;
 	@OneToMany(mappedBy = "recette")
 	private Set<ImageRecette> images;
+	
+	/*
+	 * Constructors
+	 */
+	public Recette(Set<Ingredient> ingredients) {
+		this();
+		Set<IngredientRecette> ingredientRecettes = new HashSet<>();
+		for(Ingredient ingredient : ingredients) {
+			ingredientRecettes.add(new IngredientRecette(ingredient));
+		}
+		this.ingredients = ingredientRecettes;
+	}
+	
+	/*
+	 * Methods
+	 */
+	@Transient
+	public void setIngredients(Set<Ingredient> ingredients) {
+		Set<IngredientRecette> ingredientRecettes = new HashSet<>();
+		for(Ingredient ingredient : ingredients) {
+			ingredientRecettes.add(new IngredientRecette(ingredient));
+		}
+		this.ingredients = ingredientRecettes;
+	}
 	
 	public void toEraseInfiniteLoop() {
 		this.ingredients.forEach(i -> {
@@ -65,6 +92,12 @@ public class Recette extends BaseEntity{
 		this.commentaires = null;
 		this.ingredients = null;
 		this.auteur = null;
+		this.listeEtapes = null;
 		this.images = null;
+	}
+
+	public Recette(int idRecette) {
+		this();
+		this.id = idRecette;
 	}
 }
