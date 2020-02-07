@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.edugroupe.demo.metiers.User;
+import com.edugroupe.demo.metiers.projections.UserView;
 
 @RepositoryRestResource
 public interface UserRepository extends PagingAndSortingRepository<User, Integer>{
@@ -18,4 +19,6 @@ public interface UserRepository extends PagingAndSortingRepository<User, Integer
 	// Utilise pour MyUserDetailsService. 
 	@Query("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.username=:username")
 	Optional<User> findByUsernameWithRole(@Param("username") String username);
+
+	<T>Optional<T> findById(int id, Class<T> type);
 }

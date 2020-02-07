@@ -291,6 +291,8 @@ public class DataGenerator {
 	
 	public List<Recette> saveRecettePersonalise(){
 		List<Recette> recettes = new ArrayList<>();
+		User auteurAdmin = new User();
+		auteurAdmin.setId(1);
 		/*
 		 * Recette de la Soupe au Lardon
 		 */
@@ -302,6 +304,7 @@ public class DataGenerator {
 		soupeAuLardon.setTempsPreparation(50);
 		soupeAuLardon.setTempsCuisson(80);
 		soupeAuLardon.setDescription("Une soupe bien grasse et bien dégueulasse, que je déconseille fortement de manger.");
+		soupeAuLardon.setAuteur(auteurAdmin);
 		
 		soupeAuLardon.setListeEtapes(Stream.of(
 				new EtapeRecette(1,"Portez à ébulition l'eau dans une casserole"),
@@ -340,6 +343,7 @@ public class DataGenerator {
 		chatALaMoutarde.setTempsPreparation(15);
 		chatALaMoutarde.setTempsCuisson(60);
 		chatALaMoutarde.setDescription("Fort de mes expériences culinaires et sur l'insistance de certains cordons bleus introvertis, je vous livre une recette originale qui devrait vous faire lècher les babines et friser la moustache.");
+		chatALaMoutarde.setAuteur(auteurAdmin);
 		
 		chatALaMoutarde.setListeEtapes(Stream.of(
 				new EtapeRecette(1,"Salez, poivrez et badigeonnez les morceaux de chat avec de la moutarde forte (n'hésitez pas sur la quantité, la moutarde perd de sa force avec la cuisson) puis farinez les morceaux."),
