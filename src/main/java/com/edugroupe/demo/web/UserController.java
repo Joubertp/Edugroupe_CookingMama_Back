@@ -1,27 +1,24 @@
 package com.edugroupe.demo.web;
 
-import java.util.Optional;
+import java.security.Principal;
 
 import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.edugroupe.demo.metiers.User;
-import com.edugroupe.demo.metiers.projections.RecetteView;
 import com.edugroupe.demo.repositories.UserRepository;
 
-@Controller
+@RestController
 @RequestMapping("users")
 @CrossOrigin("http://localhost:4200")
 public class UserController {
@@ -42,6 +39,13 @@ public class UserController {
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
+	@GetMapping("/login")
+	public ResponseEntity<User> login(Principal principal) {
+		return this.userRep.findByUsername(principal.getName())
+					.map(u -> new ResponseEntity<>(u, HttpStatus.ACCEPTED))
+					.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+	
 //	@GetMapping
 //	public ResponseEntity<User> findById(@PathVariable("id") int id) {
 //		Optional<User> opUser = userRep.findById(id);
