@@ -33,28 +33,35 @@ public class DatabaseContentInitialiser implements ApplicationListener<ContextRe
 			Role user = roleRepository.save(new Role(0, "ROLE_USER"));
 			Role boutique = roleRepository.save(new Role(0, "ROLE_BOUTIQUE"));
 			
-			User administrator = new User(0, "admin", passwordEncoder.encode("admin"), true);
+			User administrator = new User(0, "admin", passwordEncoder.encode("admin"), true, 
+					"Sur ce site, je suis la main droite de Dieu");
 			administrator.getRoles().add(admin);
 			administrator.getRoles().add(user);
 			userRepository.save(administrator);
 			
-			User peon = new User(0,"Peon",passwordEncoder.encode(""), true);
+			User peon = new User(0,"Peon",passwordEncoder.encode(""), true,
+					"Encore du travail ?");
 			peon.getRoles().add(user);
 			userRepository.save(peon);
 			
-			User superKiwi = new User(0,"superKiwi",passwordEncoder.encode("superKiwi"), true);
+			User superKiwi = new User(0,"SuperKiwi",passwordEncoder.encode("superKiwi"), true,
+					"SuperKiwi pour vous servir");
 			superKiwi.getRoles().add(user);
 			userRepository.save(superKiwi);
 			
-			User joker = new User(0,"Joker",passwordEncoder.encode("HAHA"), true);
+			User joker = new User(0,"Joker",passwordEncoder.encode("HAHA"), true,
+					"Je suis un simple humoriste dont l'objectif et de faire rire le monde. "
+					+ "Je vous met en garde d'un certain criminel dénomé Batman. Il est trés dangereux");
 			joker.getRoles().add(user);
 			userRepository.save(joker);
 			
-			User batman = new User(0,"Batman",passwordEncoder.encode("JeSuisBatman"), true);
+			User batman = new User(0,"Batman",passwordEncoder.encode("JeSuisBatman"), true,
+					"Je n'ai rien a dire, si ce n'est, \"je suis batman\"");
 			batman.getRoles().add(user);
 			userRepository.save(batman);
 			
-			User harlay = new User(0,"Harley Quinn",passwordEncoder.encode("puddin"), true);
+			User harlay = new User(0,"Harley Quinn",passwordEncoder.encode("puddin"), true,
+					"J'aime mon puddin !!!!!!!!!❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️");
 			harlay.getRoles().add(user);
 			userRepository.save(harlay);
 			
