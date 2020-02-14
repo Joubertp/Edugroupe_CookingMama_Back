@@ -11,6 +11,7 @@ public interface UserView {
 	String getUsername();
 	boolean isEnabled();
 	String getDescription();
+	//*****************************
 	Set<Role> getRoles();
 	Set<Recette> getRecettes();
 }
