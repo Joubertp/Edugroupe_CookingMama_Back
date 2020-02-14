@@ -20,6 +20,6 @@ public interface RecetteView {
 	//*****************************
 	User getAuteur();
 	Set<EtapeRecetteView> getListeEtapes();
-	Set<IngredientRecetteView> getIngredients();
+	Set<IngredientRecetteWithIdIngredient> getIngredients();
 	
 }
