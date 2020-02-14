@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,9 +34,10 @@ public class User {
 	private boolean enabled;
 	@Column(columnDefinition="TEXT")
 	private String description;
+	//**************************************
+	@JsonIgnore
 	@ManyToMany
 	private Set<Role> roles;
-	//**************************************
 	@JsonIgnore
 	@OneToMany(mappedBy = "auteur")
 	private Set<Recette> recettes;
