@@ -19,7 +19,7 @@ import com.edugroupe.demo.security.MyUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired	private MyUserDetailsService userDetailsService;
@@ -39,9 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 								.antMatchers("/recette**","/recette").permitAll()
 								.antMatchers("/users**","/users/").authenticated()
-								.and().httpBasic()		
-								.and().logout();
-								;
+								.and().httpBasic()
+								.and().csrf().disable();
+								
 								
 //								.and().csrf().disable().cors()
 //								.and().httpBasic();		
