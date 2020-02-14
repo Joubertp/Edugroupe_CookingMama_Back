@@ -7,7 +7,11 @@ import com.edugroupe.demo.metiers.Role;
 
 public interface UserView {
 
+	int getId();
 	String getUsername();
+	boolean isEnabled();
+	String getDescription();
+	//*****************************
 	Set<Role> getRoles();
 	Set<Recette> getRecettes();
 }

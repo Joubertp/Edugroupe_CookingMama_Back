@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edugroupe.demo.metiers.User;
+import com.edugroupe.demo.metiers.projections.UserView;
+import com.edugroupe.demo.metiers.projections.UserWithRoles;
 import com.edugroupe.demo.repositories.UserRepository;
 
 @RestController
@@ -27,11 +29,11 @@ public class UserController {
 
 	@GetMapping
 	@RolesAllowed("ROLE_ADMIN")
-	public ResponseEntity<Page<User>> listUsers(@PageableDefault(
+	public ResponseEntity<Page<UserWithRoles>> listUsers(@PageableDefault(
 												page = 0, size = 10) 
 												Pageable page){
 		
-		Page<User> users = userRep.findAll(page);
+		Page<UserWithRoles> users = userRep.findAll(UserWithRoles.class,page);
 		
 		if (users.isEmpty())
 			System.err.println("Rien ne vas plus ! La BDD est vide !");
@@ -39,6 +41,15 @@ public class UserController {
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
+	@GetMapping("/{id:[0-9]+}")
+	public ResponseEntity<UserView> findById(@PathVariable("id") int id) {
+		Optional<UserView> opUser = userRep.findById(id,UserView.class);
+		
+		if(!opUser.isPresent())
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		
+		return new ResponseEntity<>(opUser.get(),HttpStatus.OK);
+	}
 	@GetMapping("/login")
 	public ResponseEntity<User> login(Principal principal) {
 		return this.userRep.findByUsername(principal.getName())
@@ -46,14 +57,5 @@ public class UserController {
 					.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
-//	@GetMapping
-//	public ResponseEntity<User> findById(@PathVariable("id") int id) {
-//		Optional<User> opUser = userRep.findById(id);
-//		
-//		if(!opUser.isPresent())
-//			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-//		
-//		return new ResponseEntity<User>(opUser.get(),HttpStatus.OK);
-//	}
 
 }
