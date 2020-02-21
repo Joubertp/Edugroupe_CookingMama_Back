@@ -17,6 +17,7 @@ public class IngredientFournisseur {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private String libelle;
 	private double prix;
 	private String infos;
 	@ManyToOne
