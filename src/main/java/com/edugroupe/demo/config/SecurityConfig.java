@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -51,7 +52,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().configurationSource(new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                return new CorsConfiguration().applyPermitDefaultValues();
+                CorsConfiguration cors = new CorsConfiguration().applyPermitDefaultValues();
+                cors.addAllowedMethod(HttpMethod.OPTIONS);
+                cors.addAllowedMethod(HttpMethod.PUT);
+                cors.addAllowedMethod(HttpMethod.POST);
+                cors.addAllowedMethod(HttpMethod.DELETE);
+                cors.addAllowedMethod(HttpMethod.GET);
+                cors.addAllowedOrigin("http://localhost:4200");
+                return cors;
             }
         });
 	}
