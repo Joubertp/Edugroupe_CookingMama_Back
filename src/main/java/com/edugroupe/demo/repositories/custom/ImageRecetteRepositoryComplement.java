@@ -1,4 +1,4 @@
-package com.edugroupe.demo.repositories;
+package com.edugroupe.demo.repositories.custom;
 
 import java.io.File;
 import java.io.InputStream;
