@@ -35,6 +35,9 @@ public class Ingredient {
 	@JsonIgnore
 	@OneToMany (mappedBy = "ingredients")
 	private Set<CathegorieIngredient> cathegories;
+	@JsonIgnore
+	@OneToMany(mappedBy = "ingredient")
+	private Set<IngredientFournisseur> ingredientsFournisseur;
 	
 	//* Constructors ***********************
 	public Ingredient(int id) {
