@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.edugroupe.demo.metiers.Ingredient;
 import com.edugroupe.demo.metiers.projections.RecetteView;
 import com.edugroupe.demo.repositories.RecetteRepository;
 import com.edugroupe.demo.utils.DataGenerator;
@@ -48,8 +49,10 @@ public class TestController {
 		System.out.println(recetteRep);
 		
 		List<Object> toReturn = new ArrayList<>();
-		toReturn.add(dataGenerator.creatAndSaveDataIngredient());
+		List<Ingredient> ingreList = dataGenerator.creatAndSaveDataIngredient();
+		toReturn.add(ingreList);
 		toReturn.add(dataGenerator.creatAndSaveDataRecette());
+		toReturn.add(dataGenerator.creatAndSaveDataFournisseur(ingreList));
 		
 		return toReturn;
 	}

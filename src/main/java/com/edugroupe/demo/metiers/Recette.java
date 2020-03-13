@@ -70,7 +70,7 @@ public class Recette extends BaseEntity{
 	 * Methods
 	 */
 	@Transient
-	public void setIngredients(Set<Ingredient> ingredients) {
+	public void lazySetIngredients(Set<Ingredient> ingredients) {
 		Set<IngredientRecette> ingredientRecettes = new HashSet<>();
 		for(Ingredient ingredient : ingredients) {
 			ingredientRecettes.add(new IngredientRecette(ingredient));
