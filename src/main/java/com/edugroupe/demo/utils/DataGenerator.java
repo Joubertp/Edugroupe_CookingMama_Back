@@ -14,11 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.edugroupe.demo.constantes.CathIngre;
+import com.edugroupe.demo.metiers.Fournisseur;
 import com.edugroupe.demo.metiers.Ingredient;
+import com.edugroupe.demo.metiers.IngredientFournisseur;
 import com.edugroupe.demo.metiers.IngredientRecette;
 import com.edugroupe.demo.metiers.Recette;
 import com.edugroupe.demo.metiers.User;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
+import com.edugroupe.demo.repositories.FournisseurRepository;
+import com.edugroupe.demo.repositories.IngredientFournisseurRepository;
 import com.edugroupe.demo.repositories.IngredientRecetteRepository;
 import com.edugroupe.demo.repositories.IngredientRepository;
 import com.edugroupe.demo.repositories.RecetteRepository;
@@ -33,6 +37,8 @@ public class DataGenerator {
 	@Autowired	private IngredientRepository ingredientRep;
 	@Autowired	private IngredientRecetteRepository ingredientRecetteRep;
 	@Autowired	private UserRepository userRep;
+	@Autowired 	private FournisseurRepository fournisseurRep;
+	@Autowired 	private IngredientFournisseurRepository ingredientFournisseurRep;
 	
 
 	public List<Recette> creatAndSaveDataRecette(){		
@@ -55,6 +61,22 @@ public class DataGenerator {
 		}
 		
 		return toReturn;
+	}
+	
+	public List<Fournisseur> creatAndSaveDataFournisseur(List<Ingredient> ingredientsList){
+	
+		List<Fournisseur> fourList = creatListFournisseur();
+		for(int i = 0 ; i < fourList.size(); i++ ) {
+			fourList.set(i, fournisseurRep.save(fourList.get(i)));
+		}
+		List<IngredientFournisseur> ingreFourList = creatListIngredientFournisseurs(fourList,ingredientsList);
+		for(int i = 0 ; i < ingreFourList.size(); i++ ) {
+			System.out.println("Index : "+i);
+			System.out.println("ingreFour "+ingreFourList.get(i));
+			ingreFourList.set(i, ingredientFournisseurRep.save(ingreFourList.get(i)));
+		}
+		
+		return fourList;
 	}
 	
 	
@@ -100,7 +122,19 @@ public class DataGenerator {
 	}
 	
 	public Set<EtapeRecette> generatorEtapeRecette(int number) {
-		String[] actions  = {"Additionner","Ajouter","Allonger","Amener","Aplatir","Aromatiser","Arroser","Assaisonner","Assouplir","Badigeonner","Battre","Beurrer","Blanchir","Bouillir","Braiser","Brider","Chauffer","Chemiser","Chiffonner","Choisir","Ciseler","Coller","Colorer","Compléter","Compter","Concasser","Confectionner","Couper","Couvrir","Cuire","Débarrasser","Débiter","Décoquiller","Décorer","Décortiquer","Dégermer","Déglacer","Dégorger","Délayer","Démouler","Dénoyauter","Désosser","Dessaler","Dessécher","Détailler","Détendre","Diluer","Disposer","Dissoudre","Donner","Dorer","Dresser","Ébarber","Ébouillanter","Écailler","Écraser","Écumer","Effeuiller","Effiler","Effilocher","Égoutter","Égrapper","Égrener","Émincer","Emplir","Émulsionner","Enfermer","Enfourner","Entreposer","Envelopper","Épaissir","Épépiner","Éponger","Équeuter","Essorer","Essuyer","Étaler","Étendre","Étuver","Évider","Façonner","Farcir","Fariner","Fendre","Ficeler","Filtrer","Flamber","Foncer","Fondre","Fouetter","Fourrer","Frémir","Frire","Froisser","Frotter","Garnir","Glacer","Gonfler","Gratiner"};
+		String[] actions  = {"Additionner","Ajouter","Allonger","Amener","Aplatir","Aromatiser","Arroser",
+				"Assaisonner","Assouplir","Badigeonner","Battre","Beurrer","Blanchir","Bouillir","Braiser",
+				"Brider","Chauffer","Chemiser","Chiffonner","Choisir","Ciseler","Coller","Colorer",
+				"Compléter","Compter","Concasser","Confectionner","Couper","Couvrir","Cuire","Débarrasser",
+				"Débiter","Décoquiller","Décorer","Décortiquer","Dégermer","Déglacer","Dégorger","Délayer",
+				"Démouler","Dénoyauter","Désosser","Dessaler","Dessécher","Détailler","Détendre","Diluer",
+				"Disposer","Dissoudre","Donner","Dorer","Dresser","Ébarber","Ébouillanter","Écailler",
+				"Écraser","Écumer","Effeuiller","Effiler","Effilocher","Égoutter","Égrapper","Égrener",
+				"Émincer","Emplir","Émulsionner","Enfermer","Enfourner","Entreposer","Envelopper",
+				"Épaissir","Épépiner","Éponger","Équeuter","Essorer","Essuyer","Étaler","Étendre","Étuver",
+				"Évider","Façonner","Farcir","Fariner","Fendre","Ficeler","Filtrer","Flamber","Foncer",
+				"Fondre","Fouetter","Fourrer","Frémir","Frire","Froisser","Frotter","Garnir","Glacer",
+				"Gonfler","Gratiner"};
 		String[] ingedient = {"le beurre","la crème fraîche liquide","la crème fraîche semi épaisse","le gruyère râpé","les œufs","le fromage blanc","les yaourts nature","un fromage à pâte dur","le lait","la moutarde","le citron","la pâte à tarte brisée prête à dérouler","le jambon","la salade ou de la mâche (elle accompagne aussi bien les tartes, quiches salées que les plats d’hiver comme tartiflette…)","les pâtes","le riz","la semoule ou du boulgour","les boîtes de champignons de paris émincés ou entiers","le thon au naturel","la pulpe de s","les tomates pelées","le coulis de tomate","un pot de tomates séchées","le concentré de tomates","les cubes de bouillon de volaille","les cubes de bouillon de bœuf","les cubes de bouillon de légumes","l’huile d’olive","l’huile de tournesol ou autre (colza, pépins de raisins..)","le vinaigre balsamique ou vinaigre de vin","le court-bouillon","le vin blanc pour cuisiner","les oignons","l'ail","les échalotes","les pommes de terre","les fruits et les légumes de saisons","la farine","le sucre blanc ou roux","la fécule de maïs ou maïzena","la levure","le sucre vanillé","les raisins secs","  un pot de miel","une tablette de chocolat pour la cuisine","les gâteaux secs comme les petits beurres ou les speculoos","les feuilles de laurier","les branches de thym","les herbes de Provence","le coriandre moulue","le paprika","les noix de muscade ou muscade moulue","les clous de girofle","la cannelle","l'aneth","le curry"};
 		
 		Set<EtapeRecette> etapeRecettes = new HashSet<>();
@@ -383,6 +417,70 @@ public class DataGenerator {
 		
 		return recettes;
 	}
+	
+	public List<Fournisseur> creatListFournisseur(){
+		
+		List<Fournisseur> fourList = Arrays.asList(
+				new Fournisseur(0,"Total",null),
+				new Fournisseur(0,"Axa",null),
+				new Fournisseur(0,"Groupe Carrefour",null),
+				new Fournisseur(0,"Crédit agricole",null),
+				new Fournisseur(0,"Groupe PSA",null),
+				new Fournisseur(0,"BNP Paribas",null),
+				new Fournisseur(0,"Électricité de France",null),
+				new Fournisseur(0,"Engie",null),
+				new Fournisseur(0,"Auchan Holding",null),
+				new Fournisseur(0,"Société générale",null),
+				new Fournisseur(0,"Christian Dior",null),
+				new Fournisseur(0,"Vinci",null),
+				new Fournisseur(0,"Finatis",null));		
+		
+		return fourList;		
+	}
+	
+	public List<IngredientFournisseur> creatListIngredientFournisseurs(List<Fournisseur> fourList,List<Ingredient> ingredientList){
+	
+		List<IngredientFournisseur> ingreFourList = new ArrayList<>();
+
+		String[] adjectifIngredients = {"excellent","appétissant","savoureux","délicieux","exemplaire",
+				"extraordinaire","exquis","agréable","précieux","séduisant","bénéfique","admirable",
+				"remarquable","merveilleux","sublime","ravissant","jolie","gracieux ","chic ","élégant",
+				"soigné","esthétique ","impeccable ","séduisant","sans pareil ","incomparable ",
+				"inégalable ","exceptionnel ","sans précédent ","brillant","compétent","doué","fort",
+				"génial","pertinent","zweckdienlich","inventif","inédit","innovant","contemporain",
+				"moderne ","tendance ","branché" };
+		int idexAdjectifMax = adjectifIngredients.length-1; 
+		int nombre_d_IngredientFournisseur = 100;
+		int idexFourMax = fourList.size()-1;
+		int idexIngrMax = ingredientList.size()-1;
+		
+		
+		
+		for(int i = 0; i < nombre_d_IngredientFournisseur; i++) {
+			Fournisseur fournisseur = fourList.get(random.nextInt(idexFourMax));
+			Ingredient ingredient = ingredientList.get(random.nextInt(idexIngrMax));
+			String libelle = ingredient.getNom() + " " + adjectifIngredients[random.nextInt(idexAdjectifMax)];
+			double prix = (double) random.nextInt(200);
+			String infos = "Un ingrédient de cuisine est une substance, y compris les additifs alimentaires, utilisée dans la fabrication ou la préparation d'un aliment et présent dans le produit fini bien que parfois sous une forme modifiée (codex Alimentarius 1991)1.\n" + 
+					"\n" + 
+					"Juridiquement, en Europe, on parle de « denrée alimentaire préemballée » pour décrire « l’unité de vente destinée à être présentée en l’état au consommateur final et aux collectivités, constituée par une denrée alimentaire et l’emballage dans lequel elle a été conditionnée avant sa présentation à la vente, que cet emballage la recouvre entièrement ou seulement partiellement, mais en tout cas de telle façon que le contenu ne puisse être modifié sans que l’emballage subisse une ouverture ou une modification ; cette définition ne couvre pas les denrées emballées sur le lieu de vente à la demande du consommateur ou préemballées en vue de leur vente immédiate2 »";
+			ingreFourList.add(new IngredientFournisseur(0, libelle, prix, infos, fournisseur, ingredient));
+		}
+		
+		
+		return ingreFourList;
+	}
+	
+	public List<IngredientFournisseur> creatListIngredientFournisseur(Fournisseur fourList){
+		
+		List<IngredientFournisseur> ingreFourList = new ArrayList<>();
+		
+		
+		
+		
+		return ingreFourList;
+	}
+	
 	
     public LocalDate createRandomDate(int startYear, int endYear) {
         int day = createRandomIntBetween(1, 28);
