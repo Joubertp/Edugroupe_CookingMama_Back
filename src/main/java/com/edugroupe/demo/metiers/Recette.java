@@ -19,12 +19,13 @@ import com.edugroupe.demo.metiers.json.BaseEntity;
 import com.edugroupe.demo.metiers.json.EtapeRecette;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString(exclude = {"commentaires","ingredients","auteur"}) @NoArgsConstructor
+@Getter @Setter @ToString(exclude = {"commentaires","ingredients","auteur"}) @AllArgsConstructor @NoArgsConstructor
 @Entity 
 public class Recette extends BaseEntity{
 

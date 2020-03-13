@@ -46,5 +46,9 @@ public class User {
 	public User(int id, String username, String password, boolean enabled, String description) {
 		this(id,username,password,enabled,description,new HashSet<>(), new HashSet<>());
 	}
+
+	public User(int id) {
+		this(id, "", "", true, "");
+	}
 	
 }

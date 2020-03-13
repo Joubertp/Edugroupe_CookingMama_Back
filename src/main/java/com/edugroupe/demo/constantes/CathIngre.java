@@ -2,6 +2,8 @@ package com.edugroupe.demo.constantes;
 
 /*
  * Liste des cathegories d ingredient
+ * ex : 
+ * 			L'ognon jaune est un légume et un condiment
  */
 public interface CathIngre {
 	

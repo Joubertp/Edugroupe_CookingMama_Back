@@ -25,12 +25,6 @@ public class TestController {
 	
 	@Autowired
 	private RecetteRepository recetteRep;
-//	@Autowired
-//	private IngredientRepository ingredientRep;
-//	@Autowired
-//	private IngredientRecetteRepository ingredientRecetteRep;
-//	@Autowired
-//	private UserRepository userRep;
 
 	
 	@RequestMapping("/greeting")
